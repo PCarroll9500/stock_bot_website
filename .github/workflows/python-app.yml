@@ -1,7 +1,10 @@
 name: Update stockinfo.json
 
 on:
-  workflow_dispatch: # Only runs when triggered manually
+  workflow_dispatch:
+
+permissions:
+  contents: write   # <-- gives GITHUB_TOKEN push perms
 
 jobs:
   update:
@@ -10,7 +13,7 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
         with:
-          persist-credentials: true
+          persist-credentials: true   # uses GITHUB_TOKEN
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -23,7 +26,7 @@ jobs:
       - name: Run fetch_stock.py
         run: python scripts/fetch_stock.py
         env:
-          TICKER: AAPL   # Change ticker if needed
+          TICKER: AAPL
 
       - name: Commit and push updated JSON
         run: |
