@@ -1,0 +1,34 @@
+name: Update stockinfo.json
+
+on:
+  workflow_dispatch: # Only runs when triggered manually
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install yfinance
+
+      - name: Run fetch_stock.py
+        run: python scripts/fetch_stock.py
+        env:
+          TICKER: AAPL   # Change ticker if needed
+
+      - name: Commit and push updated JSON
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/data/stockinfo.json
+          git commit -m "Auto-update stockinfo.json [skip ci]" || echo "No changes to commit"
+          git push
