@@ -1,0 +1,71 @@
+{
+    "updated_at": "2025-08-10T14:30:00Z",
+    "title": "Inf Money Stock Bot",
+    "invested_cost_basis": 10000.00,
+    "equity_series": [
+        {
+            "date": "2025-07-27",
+            "equity": 10000.00
+        },
+        {
+            "date": "2025-07-28",
+            "equity": 10190.44
+        },
+        {
+            "date": "2025-07-29",
+            "equity": 10305.33
+        },
+        {
+            "date": "2025-07-30",
+            "equity": 10492.10
+        },
+        {
+            "date": "2025-07-31",
+            "equity": 10536.88
+        },
+        {
+            "date": "2025-08-01",
+            "equity": 10602.71
+        },
+        {
+            "date": "2025-08-04",
+            "equity": 10540.65
+        },
+        {
+            "date": "2025-08-05",
+            "equity": 10690.02
+        },
+        {
+            "date": "2025-08-06",
+            "equity": 10950.77
+        },
+        {
+            "date": "2025-08-07",
+            "equity": 11240.31
+        },
+        {
+            "date": "2025-08-08",
+            "equity": 11420.90
+        }
+    ],
+    "positions": [
+        {
+            "ticker": "AAPL",
+            "name": "Apple Inc.",
+            "buy_price": 210.00,
+            "quantity": 10,
+            "buy_date_time": "2025-08-01",
+            "description": "Apple designs consumer electronics and software, including the iPhone, iPad, and Mac. Services revenue continues to grow as a share of the business. Recent product updates and ecosystem strength support steady cash flow.",
+            "reason": "Momentum plus improving guidance and services growth."
+        },
+        {
+            "ticker": "NVDA",
+            "name": "NVIDIA Corporation",
+            "buy_price": 121.00,
+            "quantity": 5,
+            "buy_date_time": "2025-08-07",
+            "description": "NVIDIA develops GPUs and accelerated computing platforms widely used in AI and data centers. Demand remains strong but volatility is elevated after a multi‑quarter rally. Watch supply chain and hyperscaler capex signals.",
+            "reason": "Short-term pullback entry in a longer AI uptrend."
+        }
+    ]
+}
