@@ -5,8 +5,13 @@ from datetime import datetime
 from pathlib import Path
 from zoneinfo import ZoneInfo  # Python 3.9+
 
-# Optional CLI: python scripts/fetch_stock.py MSFT
-TICKER = sys.argv[1].upper() if len(sys.argv) > 1 else "AAPL"
+# --- integrate stock picker ---
+try:
+    # stock_picker.py should be importable (same project / PYTHONPATH)
+    from stock_picker import get_stocks
+except Exception as e:
+    get_stocks = None
+    _IMPORT_ERR = e
 
 DATA_DIR = Path("docs/data")
 JSON_PATH = DATA_DIR / "stockinfo.json"
@@ -27,24 +32,35 @@ def load_json(path: Path):
                 return json.load(f)
         except Exception:
             pass
-    # Fresh file skeleton (positions: only static fields; JS will compute live values)
+    # Fresh file skeleton; JS will compute live values
     return {
         "updated_at": None,
         "title": "Inf Money Stock Bot",
         "invested_cost_basis": 10000.00,
         "equity_series": [],
-        "positions": [
-            {
-                "ticker": TICKER,
-                "qty": 10.0,
-                "avg_price": 100.0
-            }
-        ]
+        "picks": [],
+        "positions": []
     }
 
 def save_json(path: Path, obj):
     with open(path, "w") as f:
         json.dump(obj, f, indent=2)
+
+def _build_positions_from_picks(picks, default_qty=10.0, default_avg=100.0):
+    # Keep only simple fields; your JS computes market stuff
+    positions = []
+    seen = set()
+    for p in picks:
+        t = (p.get("ticker") or "").upper()
+        if not t or t in seen:
+            continue
+        positions.append({
+            "ticker": t,
+            "qty": float(default_qty),
+            "avg_price": float(default_avg),
+        })
+        seen.add(t)
+    return positions
 
 def main():
     data = load_json(JSON_PATH)
@@ -67,16 +83,45 @@ def main():
             "equity": float(last_equity)
         })
 
-    # Keep positions trimmed to ONLY the testing fields (ticker, qty, avg_price)
-    # If existing file has more fields, strip them.
-    clean_positions = []
-    for p in data.get("positions", []):
-        clean_positions.append({
-            "ticker": p.get("ticker", TICKER),
-            "qty": float(p.get("qty", 0.0)),
-            "avg_price": float(p.get("avg_price", 0.0)),
-        })
-    data["positions"] = clean_positions
+    # --- get 10 stocks from the picker ---
+    picks = []
+    if get_stocks is None:
+        # Picker not importable; preserve any existing data
+        # You can print the error for CI logs if desired
+        print(f"Warning: could not import stock_picker: {_IMPORT_ERR}")
+        picks = data.get("picks", [])
+    else:
+        try:
+            picks = get_stocks(10) or []
+        except Exception as e:
+            print(f"Warning: stock_picker.get_stocks failed: {e}")
+            picks = data.get("picks", [])
+
+    # Normalize picks: [{"ticker": "AAPL", "reason": "..."}, ...]
+    norm_picks = []
+    seen = set()
+    for p in picks:
+        t = (p.get("ticker") or "").upper()
+        r = p.get("reason") or ""
+        if not t or t in seen:
+            continue
+        norm_picks.append({"ticker": t, "reason": r})
+        seen.add(t)
+
+    # If picker returned nothing, keep previous positions/picks (don’t blow away the file)
+    if norm_picks:
+        data["picks"] = norm_picks
+        data["positions"] = _build_positions_from_picks(norm_picks, default_qty=10.0, default_avg=100.0)
+    else:
+        # Ensure positions (if present) are trimmed to required fields
+        clean_positions = []
+        for p in data.get("positions", []):
+            clean_positions.append({
+                "ticker": (p.get("ticker") or "").upper(),
+                "qty": float(p.get("qty", 0.0)),
+                "avg_price": float(p.get("avg_price", 0.0)),
+            })
+        data["positions"] = clean_positions
 
     # Final touchups
     data["equity_series"] = sorted(data["equity_series"], key=lambda x: x["date"])
