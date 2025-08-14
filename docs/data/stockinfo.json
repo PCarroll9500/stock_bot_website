@@ -1,5 +1,5 @@
 {
-  "updated_at": "2025-08-13T07:46:03.910899-04:00",
+  "updated_at": "2025-08-14T07:48:03.743053-04:00",
   "title": "Inf Money Stock Bot",
   "invested_cost_basis": 10000.0,
   "equity_series": [
@@ -21,6 +21,10 @@
     },
     {
       "date": "2025-08-13",
+      "equity": 10500.0
+    },
+    {
+      "date": "2025-08-14",
       "equity": 10500.0
     }
   ],
