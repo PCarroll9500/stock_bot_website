@@ -1,3 +1,4 @@
+/* docs/style.css */
 :root {
     --bg: #0b1020;
     --card: #121832;
@@ -61,10 +62,9 @@ main {
     font-size: .95rem
 }
 
-.ticker {
-    font-size: 1.6rem;
-    font-weight: 700;
-    color: var(--text)
+.title {
+    font-size: 1.1rem;
+    color: #cfd6ff
 }
 
 .status {
@@ -80,6 +80,40 @@ main {
 }
 
 .status.err {
+    color: var(--err)
+}
+
+.kpis {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: .75rem
+}
+
+.kpi {
+    background: #0e1430;
+    border: 1px solid #2a355f;
+    border-radius: 12px;
+    padding: .6rem .8rem;
+    min-width: 200px
+}
+
+.kpi .label {
+    font-size: .85rem;
+    color: #9aa3b2
+}
+
+.kpi .value {
+    font-size: 1.25rem;
+    font-weight: 800;
+    margin-top: .15rem
+}
+
+.up {
+    color: var(--accent)
+}
+
+.down {
     color: var(--err)
 }
 
@@ -157,4 +191,14 @@ code.small {
     color: #cfd6ff;
     border-radius: 10px;
     padding: .6rem .75rem
+}
+
+.section-title {
+    margin-top: 1rem;
+    font-weight: 700;
+    color: #dce3ff
+}
+
+.subtle {
+    color: #9aa3b2
 }
